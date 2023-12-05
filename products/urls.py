@@ -2,11 +2,13 @@ from django.urls import path, include
 from django.conf.urls.static import static
 from django.conf import settings
 
-from products.views import index, products
+from products.views import index, products, basket_add, basket_remove
 
 urlpatterns = [
     path('', index, name='index'),
-    path('products', products, name='products')
+    path('products', products, name='products'),
+    path('baskets/add/<int:product_id>/', basket_add, name='basket_add'),
+    path('baskets/remove/<int:basket_id>/', basket_remove, name='basket_remove'),
 ]
 
 if settings.DEBUG:
