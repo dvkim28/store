@@ -4,19 +4,18 @@ from django.http import HttpResponseRedirect
 from django.shortcuts import render, get_object_or_404
 from django.views.generic import ListView, CreateView
 
+from common.views import TitleMixin
 from products.models import Product, ProductCategory, Basket
 from django.views.generic.base import TemplateView
 
 
-class indexView(TemplateView):
+class indexView(TitleMixin, TemplateView):
     template_name = 'products/index.html'
-    def get_context_data(self, *kwargs):
-        context = super(indexView, self).get_context_data()
-        context['title'] = 'Store'
-        return context
+    title = 'Store'
 
 
-class ProductsListView(ListView):
+class ProductsListView(TitleMixin, ListView):
+    title = 'Products'
     model = Product
     paginate_by = 3
     template_name = 'products/products.html'
@@ -26,7 +25,6 @@ class ProductsListView(ListView):
         return queryset.filter(category_id=category_id) if category_id else queryset
     def get_context_data(self,*,  object_list = None,  **kwargs):
         context = super(ProductsListView, self).get_context_data()
-        context['title'] = 'Store - Categories'
         context['categories'] = ProductCategory.objects.all()
         return context
 
