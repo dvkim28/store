@@ -1,12 +1,10 @@
 from django.contrib.auth.decorators import login_required
-from django.core.paginator import Paginator
 from django.http import HttpResponseRedirect
-from django.shortcuts import render, get_object_or_404
-from django.views.generic import ListView, CreateView
+from django.views.generic import ListView
+from django.views.generic.base import TemplateView
 
 from common.views import TitleMixin
-from products.models import Product, ProductCategory, Basket
-from django.views.generic.base import TemplateView
+from products.models import Basket, Product, ProductCategory
 
 
 class indexView(TitleMixin, TemplateView):
@@ -19,11 +17,13 @@ class ProductsListView(TitleMixin, ListView):
     model = Product
     paginate_by = 3
     template_name = 'products/products.html'
+
     def get_queryset(self):
         queryset = super(ProductsListView, self).get_queryset()
         category_id = self.kwargs.get('category_id')
         return queryset.filter(category_id=category_id) if category_id else queryset
-    def get_context_data(self,*,  object_list = None,  **kwargs):
+
+    def get_context_data(self, *,  object_list=None,  **kwargs):
         context = super(ProductsListView, self).get_context_data()
         context['categories'] = ProductCategory.objects.all()
         return context
@@ -41,10 +41,9 @@ def basket_add(request, product_id):
         basket.save()
     return HttpResponseRedirect(request.META['HTTP_REFERER'])
 
+
 @login_required
 def basket_remove(request, basket_id):
     basket = Basket.objects.get(id=basket_id)
     basket.delete()
     return HttpResponseRedirect(request.META['HTTP_REFERER'])
-
-

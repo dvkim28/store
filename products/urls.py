@@ -1,8 +1,9 @@
-from django.urls import path, include
-from django.conf.urls.static import static
 from django.conf import settings
+from django.conf.urls.static import static
+from django.urls import path
 
-from products.views import basket_add, basket_remove, indexView, ProductsListView
+from products.views import (ProductsListView, basket_add, basket_remove,
+                            indexView)
 
 urlpatterns = [
     path('', indexView.as_view(), name='index'),

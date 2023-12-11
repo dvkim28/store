@@ -1,8 +1,9 @@
 from django.contrib import admin
 
-from products.models import ProductCategory, Product, Basket
+from products.models import Basket, Product, ProductCategory
 
 admin.site.register(ProductCategory)
+
 
 @admin.register(Product)
 class ProductAdmin(admin.ModelAdmin):
@@ -12,9 +13,9 @@ class ProductAdmin(admin.ModelAdmin):
     search_fields = ('name',)
     ordering = ('name',)
 
+
 class BasketAdmin(admin.TabularInline):
     model = Basket
-    fields = ('product', 'qnt','created_ttp',)
+    fields = ('product', 'qnt', 'created_ttp',)
     extra = 0
     readonly_fields = ('created_ttp',)
-

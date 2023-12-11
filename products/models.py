@@ -1,5 +1,7 @@
 from django.db import models
+
 from users.models import User
+
 
 class ProductCategory(models.Model):
     name = models.CharField(max_length=128)
@@ -8,11 +10,15 @@ class ProductCategory(models.Model):
         blank=True,
         null=True
     )
+
     def __str__(self):
         return self.name
+
     class Meta:
         verbose_name = 'Category'
         verbose_name_plural = 'Categories'
+
+
 class Product(models.Model):
     name = models.CharField(
         max_length=128
@@ -31,8 +37,10 @@ class Product(models.Model):
     category = models.ForeignKey(
         to='ProductCategory',
         on_delete=models.CASCADE)
+
     def __str__(self):
         return self.name
+
     class Meta:
         verbose_name = 'Product'
         verbose_name_plural = 'Products'
@@ -41,8 +49,11 @@ class Product(models.Model):
 class BasketQuerySet(models.QuerySet):
     def total_sum(self):
         return sum(basket.sum() for basket in self)
+
     def total_qnt(self):
         return sum(basket.qnt for basket in self)
+
+
 class Basket(models.Model):
     user = models.ForeignKey(
         to=User,
@@ -58,9 +69,10 @@ class Basket(models.Model):
     created_ttp = models.DateTimeField(
         auto_now_add=True
     )
+
     def __str__(self):
         return f'Basket for {self.user.email} | Products: {self.product.name}'
+
     def sum(self):
         return self.product.price * self.qnt
     objects = BasketQuerySet.as_manager()
-
