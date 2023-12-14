@@ -1,4 +1,5 @@
 from django.contrib.auth.decorators import login_required
+from django.core.cache import cache
 from django.http import HttpResponseRedirect
 from django.views.generic import ListView
 from django.views.generic.base import TemplateView
@@ -23,9 +24,14 @@ class ProductsListView(TitleMixin, ListView):
         category_id = self.kwargs.get('category_id')
         return queryset.filter(category_id=category_id) if category_id else queryset
 
-    def get_context_data(self, *,  object_list=None,  **kwargs):
+    def get_context_data(self, *, object_list=None, **kwargs):
         context = super(ProductsListView, self).get_context_data()
-        context['categories'] = ProductCategory.objects.all()
+        categories = cache.get('categories')
+        if not categories:
+            context['categories'] = ProductCategory.objects.all()
+            cache.set('categories', context['categories'], 5)
+        else:
+            context['categories'] = categories
         return context
 
 
